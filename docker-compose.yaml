@@ -1,0 +1,36 @@
+version: '2'
+
+services:
+  devbox:
+    image: predkambrij/devbox_${COMPOSE_PROJECT_NAME}:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        ARG_UID: ${ARG_UID}
+        ARG_GID: ${ARG_GID}
+    shm_size: 4096M
+    networks:
+      - network
+    ports:
+      - "8080:8080"
+      - "3022:22"
+    extra_hosts:
+      - "${DEVBOX_HOSTNAME}:127.0.0.1"
+    hostname: "docker.localdomain"
+    environment:
+      - DISPLAY
+      - LIBGL_ALWAYS_INDIRECT=1
+    volumes:
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - ${DEVBOX_ROOT}:/build/
+      - userhome:/home/user
+
+volumes:
+  userhome:
+
+networks:
+  network:
+    external:
+      name: ${COMPOSE_PROJECT_NAME}_${NETWORK_NAME}
+
