@@ -30,6 +30,9 @@ Options:
 -E, --skipEchoPrefix  Test option.
 -e, --echoValue=value Test option with value.
 -h, --help            Print this help
+
+./ctrl.sh printForHosts
+    Show entry, that can be added to /etc/hosts
 "
 }
 
@@ -84,6 +87,9 @@ function logs() {
 }
 
 function runCommand() {
+    # load settings
+    . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/settings.sh"
+
     # parse options (overrides settings)
     while :; do
         case $1 in
@@ -123,8 +129,10 @@ function _genDotEnv() {
     # build on the fly
     echo "ARG_UID=$(id -u)" >> "${dot_env}"
     echo "ARG_GID=$(id -g)" >> "${dot_env}"
-    echo "COMPOSE_PROJECT_NAME=${COMPOSE_PROJECT_NAME:-devbox}" >> "${dot_env}"
-    echo "DEVBOX_HOSTNAME=${DEVBOX_HOSTNAME:-devbox}" >> "${dot_env}"
+    composeProjectName=${COMPOSE_PROJECT_NAME:-devbox}
+    echo "COMPOSE_PROJECT_NAME=$composeProjectName" >> "${dot_env}"
+    devboxHostname=${DEVBOX_HOSTNAME:-devbox}
+    echo "DEVBOX_HOSTNAME=$devboxHostname" >> "${dot_env}"
     echo "NETWORK_NAME=$NETWORK_NAME" >> "${dot_env}"
     echo "DEVBOX_ROOT=$(realpath ./)/" >> "${dot_env}"
     echo "SKIP_ECHO_PREFIX=${skipEchoPrefix:-false}" >> "${dot_env}"
@@ -134,8 +142,18 @@ function _genDotEnv() {
     cat "${dot_env}"
 }
 
+function printForHosts() {
+    # load settings
+    . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/settings.sh"
+
+    _genDotEnv
+    contip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${composeProjectName}_devbox_1)
+    echo "You can put this line to /etc/hosts"
+    echo "$contip $devboxHostname" 
+}
+
 if ! [[ -z "$@" ]]; then
-    if [[ "$1" == "build" ]] || [[ "$1" == "start" ]] || [[ "$1" == "logs" ]] || [[ "$1" == "kill" ]] || [[ "$1" == "runCommand" ]]; then
+    if [[ "$1" == "build" ]] || [[ "$1" == "start" ]] || [[ "$1" == "logs" ]] || [[ "$1" == "kill" ]] || [[ "$1" == "runCommand" ]] || [[ "$1" == "printForHosts" ]]; then
         "$@"
     else
         usage

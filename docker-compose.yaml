@@ -17,7 +17,7 @@ services:
       - "3022:22"
     extra_hosts:
       - "${DEVBOX_HOSTNAME}:127.0.0.1"
-    hostname: "docker.localdomain"
+    hostname: "${DEVBOX_HOSTNAME}.localdomain"
     environment:
       - DISPLAY
       - LIBGL_ALWAYS_INDIRECT=1
