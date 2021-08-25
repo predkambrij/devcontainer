@@ -51,7 +51,7 @@ function start() {
     while :; do
         case $1 in
             -E|--skipEchoPrefix)
-                skipEcho=true
+                skipEchoPrefix=true
                 ;;
             -e=?*|--echoValue=?*)
                 echoValue=${1#*=} # Delete everything up to "=" and assign the remainder.
@@ -88,7 +88,7 @@ function runCommand() {
     while :; do
         case $1 in
             -E|--skipEchoPrefix)
-                skipEcho=true
+                skipEchoPrefix=true
                 ;;
             -e=?*|--echoValue=?*)
                 echoValue=${1#*=} # Delete everything up to "=" and assign the remainder.
@@ -107,7 +107,7 @@ function runCommand() {
     done
 
     envs="export SKIP_ECHO_PREFIX=${skipEchoPrefix:-false};"
-    docker-compose exec devbox bash -c "$envs . /build/funcs.sh; do_runEcho ${echoValue:-foo}"
+    docker-compose exec devbox bash -c "$envs . /build/funcs.sh; do_echo ${echoValue:-foo}"
 }
 
 function _createDockerNetworkIfNotExists() {
