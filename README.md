@@ -14,10 +14,10 @@ This repository contains scripts that make it easy to start working on random pr
 - ./ctrl.sh logs # follow logs (stdout in docker containers). Press Ctrl+C to exit.
 - ./ctrl.sh kill # to stop and delete running containers.
 
-# Run some command in container (initiated from host machine)
+## Run some command in container (initiated from host machine)
 - ./ctrl.sh runCommand
 
-# Other info
+## Other info
 - you can override some settings or make like specified options are enabled by default
 - cp settingsOverride.sample.sh settingsOverride.sh
 
