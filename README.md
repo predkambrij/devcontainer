@@ -1,5 +1,5 @@
 # Description
-This repository contains scripts that makes it easy to start working on random projecets, without contaminating host computer.
+This repository contains scripts that make it easy to start working on random projects, without contaminating host computer.
 
     ./ctrl.sh -h # Run this to see all available commands
 
