@@ -12,9 +12,8 @@ services:
     shm_size: 4096M
     networks:
       - network
-    ports:
-      - "8080:8080"
-      - "3022:22"
+#    ports:
+#      - "8080:8080"
     extra_hosts:
       - "${DEVBOX_HOSTNAME}:127.0.0.1"
     hostname: "${DEVBOX_HOSTNAME}.localdomain"
