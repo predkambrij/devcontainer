@@ -38,17 +38,17 @@ Options:
 
 function build() {
     # load settings
-    . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/settings.sh"
+    . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/.devscripts/settings.sh"
 
     _genDotEnv
 
     echo -e "\nBuilding Docker image..."
-    docker-compose build
+    docker-compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ build
 }
 
 function start() {
     # load settings
-    . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/settings.sh"
+    . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/.devscripts/settings.sh"
 
     # parse options (may override settings)
     while :; do
@@ -75,20 +75,20 @@ function start() {
     _genDotEnv
     _createDockerNetworkIfNotExists ${COMPOSE_PROJECT_NAME}_${NETWORK_NAME}
 
-    time docker-compose up --force-recreate --build -d
+    time docker-compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ up --force-recreate --build -d
 }
 
 function kill() {
-    docker-compose down -t 0
+    docker-compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ down -t 0
 }
 
 function logs() {
-    docker-compose logs --tail=50 -f
+    docker-compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ logs --tail=50 -f
 }
 
 function runCommand() {
     # load settings
-    . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/settings.sh"
+    . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/.devscripts/settings.sh"
 
     # parse options (overrides settings)
     while :; do
@@ -124,7 +124,7 @@ function _createDockerNetworkIfNotExists() {
 }
 
 function _genDotEnv() {
-    dot_env=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/.env
+    dot_env=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/.devscripts/.env
     echo -n "" > "${dot_env}"
     # build on the fly
     echo "ARG_UID=$(id -u)" >> "${dot_env}"
@@ -144,7 +144,7 @@ function _genDotEnv() {
 
 function printForHosts() {
     # load settings
-    . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/settings.sh"
+    . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/.devscripts/settings.sh"
 
     _genDotEnv
     contip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${composeProjectName}_devbox_1)
