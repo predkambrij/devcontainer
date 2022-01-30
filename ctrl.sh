@@ -131,7 +131,7 @@ function _genDotEnv() {
     echo "ARG_GID=$(id -g)" >> "${dot_env}"
     composeProjectName=${COMPOSE_PROJECT_NAME:-devbox}
     echo "COMPOSE_PROJECT_NAME=$composeProjectName" >> "${dot_env}"
-    devboxHostname=${DEVBOX_HOSTNAME:-devbox}
+    devboxHostname=${DEVBOX_HOSTNAME:-$composeProjectName}
     echo "DEVBOX_HOSTNAME=$devboxHostname" >> "${dot_env}"
     echo "NETWORK_NAME=$NETWORK_NAME" >> "${dot_env}"
     echo "DEVBOX_ROOT=$(realpath ./)/" >> "${dot_env}"
