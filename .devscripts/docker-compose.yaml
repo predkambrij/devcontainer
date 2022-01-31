@@ -20,8 +20,13 @@ services:
     environment:
       - DISPLAY
       - LIBGL_ALWAYS_INDIRECT=1
+      - QT_X11_NO_MITSHM=1
+      - NO_AT_BRIDGE=1
     volumes:
       - /tmp/.X11-unix:/tmp/.X11-unix
+      - /dev/shm:/dev/shm
+      - /run/dbus/:/run/dbus/
+      - ~/.Xauthority:/home/user/.Xauthority
       - ${DEVBOX_ROOT}:/build/
       - userhome:/home/user
 

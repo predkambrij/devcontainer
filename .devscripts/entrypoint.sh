@@ -16,6 +16,9 @@ if [ -z "$@" ]; then
 
     echo -n > /tmp/envs.sh
     echo "export DISPLAY=$DISPLAY" >> /tmp/envs.sh
+    echo "export LIBGL_ALWAYS_INDIRECT=$LIBGL_ALWAYS_INDIRECT" >> /tmp/envs.sh
+    echo "export QT_X11_NO_MITSHM=$QT_X11_NO_MITSHM" >> /tmp/envs.sh
+    echo "export NO_AT_BRIDGE=$NO_AT_BRIDGE" >> /tmp/envs.sh
 
     sleep infinity
 else
