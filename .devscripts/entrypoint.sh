@@ -1,6 +1,10 @@
 #!/usr/bin/env bash
 
-. "/build/funcs.sh"
+. "/build/.devscripts/funcs.sh"
+
+if [ -f "/build/.devscripts/override/sshd_config" ]; then
+    runcmd sudo cp /build/.devscripts/override/sshd_config /etc/ssh/sshd_config
+fi
 
 if [ -z "$@" ]; then
     sudo /usr/sbin/service rsyslog start
