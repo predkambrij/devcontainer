@@ -43,7 +43,7 @@ function build() {
     _genDotEnv
 
     echo -e "\nBuilding Docker image..."
-    docker-compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ build
+    docker compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ build
 }
 
 function start() {
@@ -75,15 +75,15 @@ function start() {
     _genDotEnv
     _createDockerNetworkIfNotExists ${COMPOSE_PROJECT_NAME}_${NETWORK_NAME}
 
-    time docker-compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ up --force-recreate --build -d
+    time docker compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ up --force-recreate --build -d
 }
 
 function kill() {
-    docker-compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ down -t 0
+    docker compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ down -t 0
 }
 
 function logs() {
-    docker-compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ logs --tail=50 -f
+    docker compose -f .devscripts/docker-compose.yaml --project-directory=.devscripts/ logs --tail=50 -f
 }
 
 function runCommand() {
@@ -113,7 +113,7 @@ function runCommand() {
     done
 
     envs="export SKIP_ECHO_PREFIX=${skipEchoPrefix:-false};"
-    docker-compose exec devbox bash -c "$envs . /build/funcs.sh; do_echo ${echoValue:-foo}"
+    docker compose exec devbox bash -c "$envs . /build/funcs.sh; do_echo ${echoValue:-foo}"
 }
 
 function _createDockerNetworkIfNotExists() {
