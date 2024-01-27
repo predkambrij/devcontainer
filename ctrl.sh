@@ -147,7 +147,7 @@ function printForHosts() {
     . "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/.devscripts/settings.sh"
 
     _genDotEnv
-    contip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${composeProjectName}_devbox_1)
+    contip=$(docker inspect -f '{{range.NetworkSettings.Networks}}{{.IPAddress}}{{end}}' ${composeProjectName}-devbox-1)
     echo "You can put this line to /etc/hosts"
     echo "$contip $devboxHostname" 
 }
