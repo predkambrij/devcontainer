@@ -5,9 +5,6 @@ ENV DEBIAN_FRONTEND noninteractive
 ARG ARG_UID
 ARG ARG_GID
 
-# dunno what's that
-ENV NOTVISIBLE "in users profile"
-
 ADD buildscript1.sh /
 RUN /buildscript1.sh prepareUser && \
     /buildscript1.sh installSomeSw
