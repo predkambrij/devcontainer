@@ -1,28 +1,50 @@
 # Description
-This repository contains scripts that make it easy to start working on random projects, without contaminating host computer.
+This repository contains scripts that makes it easy to start working on random projects without installing a bunch of dependencies on the host computer.
 
-    ./ctrl.sh -h # Run this to see all available commands
+## generate .env
 
-# Examples
+    .assets/gen_env.sh
 
-## Build Docker image that'll be used for Docker containers
-- ./ctrl.sh build
-  - note that it's not necessary to run this first, because it's implied with ./ctrl.sh start
+## build
 
-## Build and run container
-- ./ctrl.sh start # start container(s)
-- ./ctrl.sh logs # follow logs (stdout in docker containers). Press Ctrl+C to exit.
-- ./ctrl.sh kill # to stop and delete running containers.
+    docker compose build
 
-## Connect to the container
-- ./ctrl.sh printForHosts # print entry, that can be added to /etc/hosts (eg. 172.27.0.2 devbox)
-- ssh user@devbox # password is user
-  - now you can run commands inside the container eg. xeyes
 
-## Run some command in container (initiated from host machine)
-- ./ctrl.sh runCommand # see ctrl.sh source to use it for something repeatable
+## create network if it doesn't exist yet
 
-## Other info
-- you can override some settings or make like specified options are enabled by default
-- cp settingsOverride.sample.sh settingsOverride.sh
+    bash -c '. .env; docker network ls --format "{{.Name}}" | grep -Fxq "${NETWORK_NAME}" || docker network create "${NETWORK_NAME}"'
+
+## start the container
+
+    docker compose up -d
+
+
+## ssh to the container
+
+    .assets/ssh.sh
+
+## other ways to ssh
+
+### using hoster
+[dvddarias/docker-hoster](https://github.com/dvddarias/docker-hoster) will insert container name in /etc/hosts so you can `ssh $USER@<containername>` which is handy because you can ssh from any directory (just run `docker ps -a` first to get container name)
+
+### using dnsdock with dnsmasq
+[aacebedo/dnsdock](https://github.com/aacebedo/dnsdock) provides DNS resolution.
+
+Start the following
+
+    docker run --restart=unless-stopped -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 127.0.1.53:53:53/udp aacebedo/dnsdock:v1.17.0-amd64 -v --domain=docker
+
+Add the following to /etc/dnsmasq.conf
+
+server=/docker/127.0.1.53
+
+Then you can add to ssh config (example):
+
+    Host devbox_test-devbox-1
+        Hostname devbox_devbox_test.docker
+
+Then ssh:
+
+    ssh devbox_test-devbox-1
 

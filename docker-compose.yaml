@@ -1,0 +1,67 @@
+services:
+  devbox:
+    image: predkambrij/devbox_${COMPOSE_PROJECT_NAME}:latest
+    build:
+      context: .
+      dockerfile_inline: |
+        FROM ubuntu:24.04
+
+        ENV DEBIAN_FRONTEND noninteractive
+
+        ARG ARG_UID
+        ARG ARG_GID
+        ARG ARG_UNAME
+        ARG ARG_GNAME
+
+        COPY .assets/build_common.sh /
+        COPY .assets/build_as_root.sh /
+        RUN /build_as_root.sh prepareUser && \
+            /build_as_root.sh installSomeSw
+
+        USER ${ARG_UNAME}
+        COPY .assets/build_as_user.sh /
+        RUN /build_as_user.sh installMoreSw
+
+        USER root
+        COPY .assets/supervisord.conf /etc/
+        ENTRYPOINT ["/bin/bash", "-c", "env | grep -vE 'PATH|HOSTNAME|PWD|HOME|SHLVL|^_=' >> /etc/environment; exec /usr/bin/supervisord -n -c /etc/supervisord.conf"]
+      args:
+        ARG_UID: ${ARG_UID}
+        ARG_GID: ${ARG_GID}
+        ARG_UNAME: ${ARG_UNAME}
+        ARG_GNAME: ${ARG_GNAME}
+    networks:
+      - network
+#    ports:
+#      - "8080:8080"
+#    network_mode: host
+    extra_hosts:
+      - "${DEVBOX_HOSTNAME}:127.0.0.1"
+      - "${DEVBOX_HOSTNAME}.localdomain:127.0.0.1"
+    hostname: "${DEVBOX_HOSTNAME}.localdomain"
+    environment:
+      - DISPLAY
+      - LIBGL_ALWAYS_INDIRECT=1
+      - QT_X11_NO_MITSHM=1
+      - NO_AT_BRIDGE=1
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /tmp/.X11-unix:/tmp/.X11-unix
+      - /dev/shm:/dev/shm
+      - /run/dbus/:/run/dbus/
+      - ~/.Xauthority:/home/${ARG_UNAME}/.Xauthority
+      - ${DEVBOX_ROOT}:/build/
+      - homeuser:/home/${ARG_UNAME}
+    logging:
+      driver: json-file
+      options:
+        max-size: "100m"
+
+volumes:
+  homeuser:
+
+networks:
+  network:
+    name: "${NETWORK_NAME}"
+    external: true
+
