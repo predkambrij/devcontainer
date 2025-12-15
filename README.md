@@ -18,6 +18,9 @@ This repository contains scripts that makes it easy to start working on random p
 
     docker compose up -d
 
+# SSH
+
+By default password is equal to username. You can change it, or remove it and use ssh key.
 
 ## ssh to the container
 
@@ -47,4 +50,9 @@ Then you can add to ssh config (example):
 Then ssh:
 
     ssh devbox_test-devbox-1
+
+## ssh to devcontainer on another machine
+You can uncomment ports section and ~/.Xauthority section in docker-compose.yml and do the following
+
+    ssh -Y -p 2022 $USER@<hostmachine>
 

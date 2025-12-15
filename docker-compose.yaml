@@ -3,6 +3,7 @@ services:
     image: predkambrij/devbox_${COMPOSE_PROJECT_NAME}:latest
     build:
       context: .
+      network: host
       dockerfile_inline: |
         FROM ubuntu:24.04
 
@@ -33,7 +34,7 @@ services:
     networks:
       - network
 #    ports:
-#      - "8080:8080"
+#      - "2022:22"
 #    network_mode: host
     extra_hosts:
       - "${DEVBOX_HOSTNAME}:127.0.0.1"

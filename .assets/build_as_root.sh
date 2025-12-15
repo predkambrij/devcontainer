@@ -13,6 +13,7 @@ function prepareUser() {
 
     # ubuntu 24.04 has ubuntu user with id 1000 and gid 1000
     sed -i '/^ubuntu:/d' /etc/passwd
+    sed -i '/^ubuntu:/d' /etc/group
     sed -i '/^ubuntu:/d' /etc/shadow
     rm -rf /home/ubuntu
 
