@@ -29,7 +29,7 @@ By default password is equal to username. You can change it, or remove it and us
 ## other ways to ssh
 
 ### using hoster
-[dvddarias/docker-hoster](https://github.com/dvddarias/docker-hoster) will insert container name in /etc/hosts so you can `ssh $USER@<containername>` which is handy because you can ssh from any directory (just run `docker ps -a` first to get container name)
+[dvddarias/docker-hoster](https://github.com/dvddarias/docker-hoster) will insert container name in `/etc/hosts` so you can `ssh $USER@<containername>` which is handy because you can ssh from any directory (just run `docker ps -a` first to get container name)
 
 ### using dnsdock with dnsmasq
 [aacebedo/dnsdock](https://github.com/aacebedo/dnsdock) provides DNS resolution.
@@ -38,9 +38,9 @@ Start the following
 
     docker run --restart=unless-stopped -d -v /var/run/docker.sock:/var/run/docker.sock --name dnsdock -p 127.0.1.53:53:53/udp aacebedo/dnsdock:v1.17.0-amd64 -v --domain=docker
 
-Add the following to /etc/dnsmasq.conf
+Add the following to `/etc/dnsmasq.conf`
 
-server=/docker/127.0.1.53
+    server=/docker/127.0.1.53
 
 Then you can add to ssh config (example):
 
@@ -52,7 +52,7 @@ Then ssh:
     ssh devbox_test-devbox-1
 
 ## ssh to devcontainer on another machine
-You can uncomment ports section and ~/.Xauthority section in docker-compose.yml and do the following
+You can uncomment ports section and `~/.Xauthority` section in docker-compose.yml and do the following
 
     ssh -Y -p 2022 $USER@<hostmachine>
 
