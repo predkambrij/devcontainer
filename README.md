@@ -28,8 +28,25 @@ By default password is equal to username. You can change it, or remove it and us
 
 ## other ways to ssh
 
+### using network_mode: host
+This one might be the most convenient, especially if you need to run some services on localhost, but want to access them from the host machine. It might be a bit annoying to deal with port conflicts.
+
+Uncomment `network_mode: host` and add the following to dockerfile_inline:
+
+    RUN echo 'Port 2022' >> /etc/ssh/sshd_config
+
+Add the following to your ssh config (example):
+
+    Host devbox_test-devbox-1
+        Hostname localhost
+        Port 2022
+
+Run `docker compose up -d --build` and then ssh:
+
+    ssh devbox_test-devbox-1
+
 ### using hoster
-[dvddarias/docker-hoster](https://github.com/dvddarias/docker-hoster) will insert container name in `/etc/hosts` so you can `ssh $USER@<containername>` which is handy because you can ssh from any directory (just run `docker ps -a` first to get container name)
+[dvddarias/docker-hoster](https://github.com/dvddarias/docker-hoster) will insert container name in `/etc/hosts` so you can `ssh <containername>` which is handy, just run `docker ps -a` to get container name first.
 
 ### using dnsdock with dnsmasq
 [aacebedo/dnsdock](https://github.com/aacebedo/dnsdock) provides DNS resolution.
@@ -50,6 +67,7 @@ Then you can add to ssh config (example):
 Then ssh:
 
     ssh devbox_test-devbox-1
+
 
 ## ssh to devcontainer on another machine
 You can uncomment ports section and `~/.Xauthority` section in docker-compose.yml and do the following
