@@ -42,9 +42,7 @@ services:
     hostname: "${DEVBOX_HOSTNAME}.localdomain"
     environment:
       - DISPLAY
-      - LIBGL_ALWAYS_INDIRECT=1
-      - QT_X11_NO_MITSHM=1
-      - NO_AT_BRIDGE=1
+    env_file: .env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/.X11-unix:/tmp/.X11-unix
