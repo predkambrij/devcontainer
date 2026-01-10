@@ -8,9 +8,9 @@ set -o pipefail
 
 function installMoreSw() {
     sudo apt-get install -y openssh-server ca-certificates
-    sudo mkdir /var/run/sshd
+    sudo mkdir -p /var/run/sshd
 
-    sudo ssh-keygen -P "" -t dsa -f /etc/ssh/ssh_host_dsa_key
+    sudo ssh-keygen -y -t ed25519 -f /etc/ssh/ssh_host_ed25519_key -N ""
 
     # auxiliary tools
     sudo apt-get install -y tmux vim less curl iputils-ping net-tools iproute2
