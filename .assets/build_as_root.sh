@@ -4,10 +4,9 @@ set -o xtrace
 set -o errexit
 set -o pipefail
 
-. "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/build_common.sh"
-
 function prepareUser() {
-    aptUpgrade
+    apt-get update
+    apt-get upgrade -y
     apt-get install -y locales sudo
     locale-gen "en_US.UTF-8"
 
@@ -40,15 +39,13 @@ export PATH=/home/${ARG_UNAME}/.mybins:${PATH}
 EOF
 
     mkdir -p /home/${ARG_UNAME}/.ssh
-    mkdir -p /home/${ARG_UNAME}/.mybins
     chown "${ARG_UID}:${ARG_GID}" -R /home/${ARG_UNAME}
 
     echo "${ARG_UNAME} ALL=(ALL) NOPASSWD: ALL" > /etc/sudoers.d/${ARG_UNAME}
     chmod 0440 /etc/sudoers.d/${ARG_UNAME}
-}
 
-function installSomeSw() {
-    apt-get install -y unzip wget
+    # clean up the apt cache
+    rm -rf /var/lib/apt/lists/*
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then

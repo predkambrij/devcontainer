@@ -4,8 +4,12 @@ set -o xtrace
 set -o errexit
 set -o pipefail
 
-. "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/build_common.sh"
-
+function aptUpdate() {
+    sudo apt-get update
+}
+function installSomeSw() {
+    sudo apt-get install -y unzip wget speech-dispatcher
+}
 function installMoreSw() {
     sudo apt-get install -y openssh-server ca-certificates
     sudo mkdir -p /var/run/sshd

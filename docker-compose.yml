@@ -5,7 +5,7 @@ services:
       context: .
       network: host
       dockerfile_inline: |
-        FROM ubuntu:25.10
+        FROM ubuntu:26.04
 
         ENV DEBIAN_FRONTEND noninteractive
 
@@ -14,18 +14,18 @@ services:
         ARG ARG_UNAME
         ARG ARG_GNAME
 
-        COPY .assets/build_common.sh /
         COPY .assets/build_as_root.sh /
-        RUN /build_as_root.sh prepareUser && \
-            /build_as_root.sh installSomeSw
+        RUN /build_as_root.sh prepareUser
 
         USER ${ARG_UNAME}
         COPY .assets/build_as_user.sh /
-        RUN /build_as_user.sh installMoreSw
+        RUN /build_as_user.sh aptUpdate && \
+            /build_as_user.sh installSomeSw && \
+            /build_as_user.sh installMoreSw
 
         USER root
         COPY .assets/supervisord.conf /etc/
-        ENTRYPOINT ["/bin/bash", "-c", "env | grep -vE 'PATH|HOSTNAME|PWD|HOME|SHLVL|^_=' >> /etc/environment; exec /usr/bin/supervisord -n -c /etc/supervisord.conf"]
+        ENTRYPOINT ["/bin/bash", "-c", "env | grep -vE 'PATH|HOSTNAME|PWD|HOME|SHLVL|^_=' >> /etc/environment; mkdir -p /run/user/${ARG_UID} && chmod 700 /run/user/${ARG_UID} && chown ${ARG_UID}:${ARG_GID} /run/user/${ARG_UID}; exec /usr/bin/supervisord -n -c /etc/supervisord.conf"]
       args:
         ARG_UID: ${ARG_UID}
         ARG_GID: ${ARG_GID}
@@ -42,6 +42,7 @@ services:
     hostname: "${DEVBOX_HOSTNAME}.localdomain"
     environment:
       - DISPLAY
+      - PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native
     env_file: .env
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
@@ -51,10 +52,20 @@ services:
       - ~/.Xauthority:/home/${ARG_UNAME}/.Xauthority
       - ${DEVBOX_ROOT}:/build/
       - homeuser:/home/${ARG_UNAME}
+      - ${XDG_RUNTIME_DIR}/pulse:${XDG_RUNTIME_DIR}/pulse
+      - /run/user/${ARG_UID}:/run/user/${ARG_UID}
     logging:
       driver: json-file
       options:
         max-size: "100m"
+    #privileged: true
+    #deploy:
+    #  resources:
+    #    reservations:
+    #      devices:
+    #        - driver: nvidia
+    #          count: all # 1 # alternatively, use `count: all` for all GPUs
+    #          capabilities: [gpu, graphics, video, compute, utility, display]
 
 volumes:
   homeuser:
