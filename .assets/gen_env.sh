@@ -1,7 +1,7 @@
 #!/bin/bash
 
-set -o errexit
-set -o pipefail
+set -eu -o pipefail -o errtrace
+shopt -s inherit_errexit
 
 COMPOSE_PROJECT_NAME=$(basename $(realpath $(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/../) | tr '[:upper:]' '[:lower:]' | tr -d '.')
 dot_env=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/../.env

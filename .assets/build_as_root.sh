@@ -1,8 +1,7 @@
 #!/bin/bash
 
-set -o xtrace
-set -o errexit
-set -o pipefail
+set -eux -o pipefail -o errtrace
+shopt -s inherit_errexit
 
 function prepareUser() {
     apt-get update
