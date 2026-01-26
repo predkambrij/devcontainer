@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eu -o pipefail -o errtrace
+set -eEu -o pipefail
 shopt -s inherit_errexit
 
 COMPOSE_PROJECT_NAME=$(basename $(realpath $(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/../) | tr '[:upper:]' '[:lower:]' | tr -d '.')

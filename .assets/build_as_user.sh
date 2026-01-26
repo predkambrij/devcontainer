@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux -o pipefail -o errtrace
+set -eEux -o pipefail
 shopt -s inherit_errexit
 
 function aptUpdate() {

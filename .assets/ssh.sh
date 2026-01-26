@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -eux -o pipefail -o errtrace
+set -eEux -o pipefail
 shopt -s inherit_errexit
 
 dot_env=$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/../.env
