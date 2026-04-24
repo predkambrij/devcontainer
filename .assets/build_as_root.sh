@@ -8,12 +8,6 @@ function prepareUser() {
     apt-get install -y locales sudo
     locale-gen "en_US.UTF-8"
 
-    # ubuntu 24.04 has ubuntu user with id 1000 and gid 1000
-    sed -i '/^ubuntu:/d' /etc/passwd
-    sed -i '/^ubuntu:/d' /etc/group
-    sed -i '/^ubuntu:/d' /etc/shadow
-    rm -rf /home/ubuntu
-
     # prepare user
     mkdir -p /home/${ARG_UNAME}
     echo "${ARG_UNAME}:x:${ARG_UID}:${ARG_GID}:${ARG_UNAME},,,:/home/${ARG_UNAME}:/bin/bash" >> /etc/passwd

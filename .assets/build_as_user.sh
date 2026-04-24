@@ -16,7 +16,7 @@ function installMoreSw() {
 
     # auxiliary tools
     sudo apt-get install -y tmux vim less curl iputils-ping net-tools iproute2
-    sudo apt-get install -y libgtk-3-0 x11-apps
+    sudo apt-get install -y libgtk-3-0t64 x11-apps
 
     sudo apt-get install -y supervisor
 }
