@@ -5,7 +5,7 @@ services:
       context: .
       network: host
       dockerfile_inline: |
-        FROM ubuntu:25.10
+        FROM ubuntu:26.04
 
         ENV DEBIAN_FRONTEND noninteractive
 
