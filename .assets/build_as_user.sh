@@ -20,9 +20,8 @@ function installMoreSw() {
 
     sudo apt-get install -y supervisor
 
-    sudo apt-get install -y libjasypt-java
     # for codex
-    apt-get install -y bubblewrap ripgrep
+    sudo apt-get install -y bubblewrap ripgrep
 }
 
 function installDockerClient() {
