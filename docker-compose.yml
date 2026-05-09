@@ -14,6 +14,7 @@ services:
         ARG ARG_GID
         ARG ARG_UNAME
         ARG ARG_GNAME
+        ARG ARG_DOCKER_GID
 
         COPY .assets/build_as_root.sh /
         RUN /build_as_root.sh prepareUser
@@ -22,7 +23,8 @@ services:
         COPY .assets/build_as_user.sh /
         RUN /build_as_user.sh aptUpdate && \
             /build_as_user.sh installSomeSw && \
-            /build_as_user.sh installMoreSw
+            /build_as_user.sh installMoreSw && \
+            /build_as_user.sh installDockerClient
 
         USER root
         COPY .assets/supervisord.conf /etc/
