@@ -6,6 +6,12 @@ This repository contains scripts that makes it easy to start working on random p
 .assets/gen_env.sh
 ```
 
+## update the base image
+By default, `docker compose up` does not check for newer base image versions (`pull_policy: never`). To manually check for and pull an update:
+```bash
+docker compose pull devbox
+```
+
 ## build
 ```bash
 docker compose build

@@ -1,0 +1,5 @@
+EXTRA_ENV_KEYS=(
+    EDITOR
+    VISUAL
+)
+

@@ -6,7 +6,11 @@ function prepareUser() {
     apt-get update
     apt-get upgrade -y
     apt-get install -y locales sudo
-    locale-gen "en_US.UTF-8"
+    echo "en_US.UTF-8 UTF-8" > /etc/locale.gen
+    locale-gen
+    echo "LANG=en_US.UTF-8" >> /etc/environment
+    echo "LC_ALL=en_US.UTF-8" >> /etc/environment
+    echo "LANGUAGE=en_US:en" >> /etc/environment
 
     # prepare user
     mkdir -p /home/${ARG_UNAME}

@@ -1,6 +1,7 @@
 services:
   devbox:
     image: predkambrij/devbox_${COMPOSE_PROJECT_NAME}:latest
+    pull_policy: never
     build:
       context: .
       network: host
@@ -43,7 +44,10 @@ services:
     environment:
       - DISPLAY
       - PULSE_SERVER=unix:${XDG_RUNTIME_DIR}/pulse/native
-    env_file: .env
+    env_file:
+      - .env
+      - .env.extra
+    entrypoint: ["bash", "/build/.assets/set_etc_environment.sh", "/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/.X11-unix:/tmp/.X11-unix
@@ -54,6 +58,9 @@ services:
       - homeuser:/home/${ARG_UNAME}
       - ${XDG_RUNTIME_DIR}/pulse:${XDG_RUNTIME_DIR}/pulse
       - /run/user/${ARG_UID}:/run/user/${ARG_UID}
+      - /etc/localtime:/etc/localtime:ro
+      - /etc/timezone:/etc/timezone:ro
+      - ~/.codex/auth.json:/home/${ARG_UNAME}/.codex/auth.json:ro
     logging:
       driver: json-file
       options:

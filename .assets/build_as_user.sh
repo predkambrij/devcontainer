@@ -6,7 +6,7 @@ function aptUpdate() {
     sudo apt-get update
 }
 function installSomeSw() {
-    sudo apt-get install -y unzip wget speech-dispatcher
+    sudo apt-get install -y unzip wget speech-dispatcher git zip
 }
 function installMoreSw() {
     sudo apt-get install -y openssh-server ca-certificates
@@ -19,6 +19,8 @@ function installMoreSw() {
     sudo apt-get install -y libgtk-3-0t64 x11-apps
 
     sudo apt-get install -y supervisor
+
+    sudo apt-get install -y libjasypt-java
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
