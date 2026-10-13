@@ -44,23 +44,16 @@ docker compose cp ~/.ssh/authorized_keys devbox:/home/$USER/.ssh/authorized_keys
 ## other ways to ssh
 
 ### using network_mode: host
-This one might be the most convenient, especially if you need to run some services on localhost, but want to access them from the host machine. It might be a bit annoying to deal with port conflicts.
-
-Uncomment `network_mode: host` and add the following to dockerfile_inline:
-```
-RUN echo 'Port 2022' >> /etc/ssh/sshd_config
-```
-
-Add the following to your ssh config (example):
-```
-Host devbox_test-devbox-1
-    Hostname localhost
-    Port 2022
-```
-
-Run `docker compose up -d --build` and then ssh:
+Set this entry in `ENV_VARS` in `conf.sh`:
 ```bash
-ssh devbox_test-devbox-1
+[DEVBOX_CONFIG]=devbox-host
+```
+
+Regenerate `.env`, rebuild, and connect:
+```bash
+./ctrl.sh genEnv
+docker compose up -d --build
+./ctrl.sh sshp_h
 ```
 
 ### using hoster
