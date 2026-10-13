@@ -1,9 +1,13 @@
 # Description
 This repository contains scripts that makes it easy to start working on random projects without installing a bunch of dependencies on the host computer.
 
-## generate .env
+## prepare configs
 ```bash
+# generate .env
 .assets/gen_env.sh
+# generate .env.extra
+cp conf_sample.sh conf.sh
+./ctrl.sh genEnvExtra
 ```
 
 ## build
