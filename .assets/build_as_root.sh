@@ -19,20 +19,20 @@ function prepareUser() {
     echo "${ARG_UNAME}:${ARG_UNAME}" | chpasswd
     pwconv
 
-    cat <<'EOF' > /home/${ARG_UNAME}/.bash_login
-if [ -f ~/.bashrc ]; then
-    . ~/.bashrc
-fi
-EOF
+    cat <<-'EOF' > /home/${ARG_UNAME}/.bash_login
+		if [ -f ~/.bashrc ]; then
+		    . ~/.bashrc
+		fi
+		EOF
 
-    cat <<'EOF' > /home/${ARG_UNAME}/.bashrc
-export HISTFILESIZE=
-export HISTSIZE=
-export HISTCONTROL=ignoreboth:erasedups
-PS1='\[\033[01;32m\]\u@\h\[\033[01;34m\] \w $\[\033[00m\] '
-alias ls='ls --color=auto'
-export PATH=/home/${ARG_UNAME}/.mybins:${PATH}
-EOF
+    cat <<-'EOF' > /home/${ARG_UNAME}/.bashrc
+		export HISTFILESIZE=
+		export HISTSIZE=
+		export HISTCONTROL=ignoreboth:erasedups
+		PS1='\[\033[01;32m\]\u@\h\[\033[01;34m\] \w $\[\033[00m\] '
+		alias ls='ls --color=auto'
+		export PATH=/home/${ARG_UNAME}/.mybins:${PATH}
+		EOF
 
     mkdir -p /home/${ARG_UNAME}/.ssh
     chown "${ARG_UID}:${ARG_GID}" -R /home/${ARG_UNAME}
