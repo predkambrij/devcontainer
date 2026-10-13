@@ -38,7 +38,7 @@ docker compose cp ~/.ssh/authorized_keys devbox:/home/$USER/.ssh/authorized_keys
 
 ## ssh to the container
 ```bash
-.assets/ssh.sh
+./ctrl.sh ssh
 ```
 
 ## other ways to ssh
