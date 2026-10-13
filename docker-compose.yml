@@ -1,5 +1,6 @@
 services:
-  devbox:
+  devbox-base:
+    profiles: [donotstart]
     image: predkambrij/devbox_${COMPOSE_PROJECT_NAME}:latest
     pull_policy: never
     build:
@@ -26,6 +27,7 @@ services:
             /build_as_user.sh installMoreSw && \
             /build_as_user.sh installDockerClient
 
+        ENV SSHD_PORT=22
         USER root
         COPY .assets/supervisord.conf /etc/
 
@@ -46,9 +48,6 @@ services:
         ARG_GNAME: ${ARG_GNAME}
     networks:
       - network
-#    ports:
-#      - "2022:22"
-#    network_mode: host
     extra_hosts:
       - "${DEVBOX_HOSTNAME}:127.0.0.1"
       - "${DEVBOX_HOSTNAME}.localdomain:127.0.0.1"
@@ -59,7 +58,10 @@ services:
     env_file:
       - .env
       - .env.extra
-    entrypoint: ["bash", "/build/.assets/set_etc_environment.sh", "/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
+    configs:
+      - source: set_etc_environment
+        target: /usr/local/bin/set_etc_environment.sh
+    entrypoint: ["bash", "/usr/local/bin/set_etc_environment.sh", "/usr/bin/supervisord", "-n", "-c", "/etc/supervisord.conf"]
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock
       - /tmp/.X11-unix:/tmp/.X11-unix
@@ -86,6 +88,25 @@ services:
     #          count: all # 1 # alternatively, use `count: all` for all GPUs
     #          capabilities: [gpu, graphics, video, compute, utility, display]
 
+  devbox-ports:
+    extends:
+      service: devbox-base
+    ports:
+      - "2022:22"
+
+  devbox-host:
+    extends:
+      service: devbox-base
+    networks: !reset []
+    network_mode: host
+    environment:
+      - SSHD_PORT=2022
+
+  devbox:
+    extends:
+      service: ${DEVBOX_CONFIG:-devbox-base}
+    profiles: !reset []
+
 volumes:
   homeuser:
 
@@ -94,3 +115,29 @@ networks:
     name: "${NETWORK_NAME}"
     external: true
 
+
+configs:
+  set_etc_environment:
+    # Escape $ so Bash expands variables at container startup.
+    content: |
+      #!/usr/bin/env bash
+      set -euo pipefail
+
+      source /build/conf.sh
+
+      for var_name in "$${EXTRA_ENV_KEYS[@]}"; do
+        grep -q "^$${var_name}=" /etc/environment || echo "$${var_name}=$${!var_name-}" >> /etc/environment
+      done
+
+      # Set up user runtime directory
+      if [[ -n "$${ARG_UID:-}" ]]; then
+        mkdir -p "/run/user/$${ARG_UID}"
+        chmod 700 "/run/user/$${ARG_UID}"
+        chown "$${ARG_UID}:$${ARG_GID:-$${ARG_UID}}" "/run/user/$${ARG_UID}"
+      fi
+
+      # Ensure .codex dir exists with correct ownership
+      mkdir -p "/home/$${ARG_UNAME:-user}/.codex"
+      chown "$${ARG_UID}:$${ARG_GID:-$${ARG_UID}}" "/home/$${ARG_UNAME:-user}/.codex"
+
+      exec "$$@"

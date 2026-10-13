@@ -3,9 +3,31 @@ set -o pipefail
 shopt -s inherit_errexit
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-source "${SCRIPT_DIR}/conf.sh"
+
+function genEnv() {
+    source "${SCRIPT_DIR}/conf.sh"
+    local dot_env="${SCRIPT_DIR}/.env"
+    local project_name=$(basename "$SCRIPT_DIR" | tr '[:upper:]' '[:lower:]' | tr -d '.')
+    local docker_gid=$(getent group docker | cut -d: -f3)
+
+    cat <<-EOF > "$dot_env"
+		ARG_UID=$(id -u)
+		ARG_GID=$(id -g)
+		ARG_UNAME=$(id -un)
+		ARG_GNAME=$(id -gn)
+		ARG_DOCKER_GID=$docker_gid
+		COMPOSE_PROJECT_NAME=$project_name
+		DEVBOX_HOSTNAME=$project_name
+		NETWORK_NAME=${project_name}_devbox
+		DEVBOX_ROOT=$(realpath "$SCRIPT_DIR")/
+		EOF
+    for var_name in "${!ENV_VARS[@]}"; do
+        printf '%s=%s\n' "$var_name" "${ENV_VARS[$var_name]}" >> "$dot_env"
+    done
+}
 
 function genEnvExtra() {
+    source "${SCRIPT_DIR}/conf.sh"
     local dot_env_extra="${SCRIPT_DIR}/.env.extra"
     : > "$dot_env_extra"
     for var_name in "${EXTRA_ENV_KEYS[@]}"; do
@@ -13,6 +35,7 @@ function genEnvExtra() {
     done
 }
 
+# ssh
 function setSshVars() {
     SSH_USERNAME=$(grep -oP "(?<=ARG_UNAME=).*" "${SCRIPT_DIR}/.env")
     SSH_HOSTNAME="${1:-}"

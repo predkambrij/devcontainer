@@ -4,7 +4,7 @@ This repository contains scripts that makes it easy to start working on random p
 ## prepare configs
 ```bash
 # generate .env
-.assets/gen_env.sh
+./ctrl.sh genEnv
 # generate .env.extra
 cp conf_sample.sh conf.sh
 ./ctrl.sh genEnvExtra
